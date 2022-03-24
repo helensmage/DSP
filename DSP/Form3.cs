@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace DSP
 {
@@ -40,32 +41,19 @@ namespace DSP
             rate.Text = SamplingRate.ToString() + " Гц (шаг между отсчетами " + (1/ SamplingRate).ToString().Replace(',', '.') + " сек)";
             start.Text = StartDate + " " + StartTime;
 
+            DateTime timeParse0 = DateTime.ParseExact(
+                StartDate + " " + StartTime,
+                "dd-MM-yyyy HH:mm:ss.fff",
+                CultureInfo.InvariantCulture
+            );
+            DateTime timeParse1 = timeParse0.AddSeconds(SamplesNumber * (1 / SamplingRate));
+            end.Text = timeParse1.ToString("dd-MM-yyyy HH:mm:ss.fff");
+
             TimeSpan time = TimeSpan.FromSeconds(SamplesNumber * (1 / SamplingRate));
             duration.Text = time.Days + " - суток, " + time.Hours + " - часов, " + time.Minutes + " - минут, "
                + time.Seconds + "." + time.Milliseconds + " - секунд";
 
-            /*string dd, MM, yyyy, hh, mm, ss, mss;
-            dd = Convert.ToString(StartDate[0]);
-            dd += Convert.ToString(StartDate[1]);
-            MM = Convert.ToString(StartDate[3]);
-            MM += Convert.ToString(StartDate[4]);
-            yyyy = Convert.ToString(StartDate[6]);
-            yyyy += Convert.ToString(StartDate[7]);
-            yyyy += Convert.ToString(StartDate[8]);
-            yyyy += Convert.ToString(StartDate[9]);
-            hh = Convert.ToString(StartTime[0]);
-            hh += Convert.ToString(StartTime[1]);
-            mm = Convert.ToString(StartTime[3]);
-            mm += Convert.ToString(StartTime[4]);
-            ss = Convert.ToString(StartTime[6]);
-            ss += Convert.ToString(StartTime[7]);
-            mss = Convert.ToString(StartTime[9]);
-            mss += Convert.ToString(StartTime[10]);
-            mss += Convert.ToString(StartTime[11]);
-            end.Text = ((int.Parse(dd) + time.Days)%31).ToString() + "-" + MM + "-" + yyyy + " " + ((int.Parse(hh) + time.Hours)%60).ToString() +
-                ":" + ((int.Parse(mm) + time.Minutes)%60).ToString() + ":" + ((int.Parse(ss) + time.Seconds)%60).ToString() + "." + ((int.Parse(mss) + time.Milliseconds)%1000).ToString();
-
-            */filename = filename.Replace("C:\\Users\\User\\Desktop\\4 семестр\\Проект по Компьютерной Графике\\", "");
+            filename = filename.Replace("C:\\Users\\User\\Desktop\\4 семестр\\Проект по Компьютерной Графике\\", ""); //
             dataGridView1.ColumnCount = 3;
             dataGridView1.RowCount = 1;
             dataGridView1.Columns[0].MinimumWidth = 100;

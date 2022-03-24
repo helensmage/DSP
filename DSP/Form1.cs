@@ -37,9 +37,8 @@ namespace DSP
             filename = openFileDialog1.FileName;
 
             string[] array = File.ReadAllLines(filename, Encoding.Default);
-
+            if (f2 != null) f2.Close();
             f2 = new Form2(array);
-        
             f2.Show();
 
         }
