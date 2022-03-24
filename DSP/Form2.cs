@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.Linq;
 
 namespace DSP
 {
     public partial class Form2 : Form
     {
         string[] array;
-        System.Drawing.Bitmap[] bbb;
+        Bitmap[] bbb;
         public int ChannelsNumber;
         public int SamplesNumber;
         public float SamplingRate;
@@ -27,7 +21,17 @@ namespace DSP
         public Form2(string[] arr)
         {
             InitializeComponent();
+            
             array = arr;
+            StartPosition = FormStartPosition.Manual;
+            foreach (var scrn in Screen.AllScreens)
+            {
+                if (scrn.Bounds.Contains(Location))
+                {
+                    Location = new Point(scrn.Bounds.Right - Width, scrn.Bounds.Top + 47);
+                    return;
+                }
+            }
         }
 
         private void MapRectangles(Graphics gr,
@@ -41,7 +45,7 @@ namespace DSP
             }
             else
             {
-                wrectf = new RectangleF(wxmin, wymin * 10000, wxmax - wxmin, wxmax - wxmin);
+                wrectf = new RectangleF(wxmin, wymin * wymin * (-1000), wxmax - wxmin, wxmax - wxmin);
             }
             PointF[] dpts = {
                  new PointF(dxmin, dymin),
@@ -99,8 +103,8 @@ namespace DSP
             }
 
             Array.Clear(array, 0, array.Length);
-
-            bbb = new System.Drawing.Bitmap[ChannelsNumber];
+            
+            bbb = new Bitmap[ChannelsNumber];
             for (int i = 0; i < ChannelsNumber; i++)
             {
                 Graphics graphicsObj;
@@ -117,7 +121,7 @@ namespace DSP
 
                 Font drawFont = new Font("Arial", 16);
                 SolidBrush drawBrush = new SolidBrush(Color.Blue);
-                float x = this.ClientSize.Width / 2;
+                float x = 0;
                 float y = this.ClientSize.Height / ChannelsNumber - 20;
                 graphicsObj.DrawString(ChannelsNames[i], drawFont, drawBrush, x, y);
 
@@ -128,20 +132,19 @@ namespace DSP
                 float MAX_LEVEL = table[i].Max();
                 MapRectangles(graphicsObj,
                     MIN_SAMPLE, MAX_SAMPLE, MIN_LEVEL, MAX_LEVEL,
-                    0, this.ClientSize.Width, this.ClientSize.Height / ChannelsNumber, 0);
-        
-                PointF[] points = new PointF[SamplesNumber];
-                for (int j = 0; j < points.Length; j++)
-                {
-                    points[j] = new PointF(j, table[i][j]);
-                }
+                    0, this.ClientSize.Width, this.ClientSize.Height / ChannelsNumber - 20, 0);
+                
                 using (Pen thin_pen = new Pen(Color.Black, 3))
                 {
-                    graphicsObj.DrawLines(thin_pen, points);
+                    for(int count = 0; count < SamplesNumber - 1; count++)
+                    {
+                        graphicsObj.DrawLine(thin_pen, new PointF(count, table[i][count]), new PointF(count + 1, table[i][count + 1]));
+                    }
                 }
 
                 graphicsObj.Dispose();
             }
+            
         }
 
         private void Form2_Paint(object sender, PaintEventArgs e)
@@ -149,10 +152,10 @@ namespace DSP
             Graphics graphicsObj = e.Graphics;
 
             int h = 0;
-            foreach (System.Drawing.Bitmap bmap in bbb)
+            foreach (Bitmap bmap in bbb)
             {
                 graphicsObj.DrawImage(bmap, 0, bmap.Height * h, bmap.Width, bmap.Height);
-                
+                graphicsObj.DrawRectangle(Pens.Blue, 0, bmap.Height * h, bmap.Width, bmap.Height);
                 h++;
             }
 

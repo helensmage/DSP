@@ -37,25 +37,14 @@ namespace DSP
         {
             k.Text = ChannelsNumber.ToString();
             n.Text = SamplesNumber.ToString();
-            string seconds;
-            if (SamplesNumber == 0)
-            {
-                seconds = "0";
-            }
-            else
-            {
-                seconds = (SamplingRate / SamplesNumber).ToString();
-                seconds = seconds.Replace(',', '.');
-            }
-            rate.Text = SamplingRate.ToString() + " Гц (шаг между отсчетами " + seconds + " сек)";
+            rate.Text = SamplingRate.ToString() + " Гц (шаг между отсчетами " + (1/ SamplingRate).ToString().Replace(',', '.') + " сек)";
             start.Text = StartDate + " " + StartTime;
 
-            TimeSpan time = TimeSpan.FromSeconds(SamplesNumber * SamplingRate); //в секундах
-            //end.Text = StartDate + " " + StartTime;
+            TimeSpan time = TimeSpan.FromSeconds(SamplesNumber * (1 / SamplingRate));
             duration.Text = time.Days + " - суток, " + time.Hours + " - часов, " + time.Minutes + " - минут, "
                + time.Seconds + "." + time.Milliseconds + " - секунд";
 
-            string dd, MM, yyyy, hh, mm, ss, mss;
+            /*string dd, MM, yyyy, hh, mm, ss, mss;
             dd = Convert.ToString(StartDate[0]);
             dd += Convert.ToString(StartDate[1]);
             MM = Convert.ToString(StartDate[3]);
@@ -76,7 +65,7 @@ namespace DSP
             end.Text = ((int.Parse(dd) + time.Days)%31).ToString() + "-" + MM + "-" + yyyy + " " + ((int.Parse(hh) + time.Hours)%60).ToString() +
                 ":" + ((int.Parse(mm) + time.Minutes)%60).ToString() + ":" + ((int.Parse(ss) + time.Seconds)%60).ToString() + "." + ((int.Parse(mss) + time.Milliseconds)%1000).ToString();
 
-            filename = filename.Replace("C:\\Users\\User\\Desktop\\4 семестр\\Проект по Компьютерной Графике\\", "");
+            */filename = filename.Replace("C:\\Users\\User\\Desktop\\4 семестр\\Проект по Компьютерной Графике\\", "");
             dataGridView1.ColumnCount = 3;
             dataGridView1.RowCount = 1;
             dataGridView1.Columns[0].MinimumWidth = 100;
