@@ -9,20 +9,10 @@ namespace DSP
 {
     public partial class Form2 : Form
     {
-        string[] array;
-        Bitmap[] bbb;
-        public int ChannelsNumber;
-        public int SamplesNumber;
-        public float SamplingRate;
-        public string StartDate;
-        public string StartTime;
-        public string[] ChannelsNames;
-
-        public Form2(string[] arr)
+        public Form2()
         {
             InitializeComponent();
             
-            array = arr;
             StartPosition = FormStartPosition.Manual;
             foreach (var scrn in Screen.AllScreens)
             {
@@ -57,88 +47,41 @@ namespace DSP
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            ChannelsNumber = int.Parse(array[1]);
-            SamplesNumber = int.Parse(array[3]);
-            SamplingRate = float.Parse(array[5], CultureInfo.InvariantCulture.NumberFormat);
-            StartDate = array[7];
-            StartTime = array[9];
-            ChannelsNames = new string[ChannelsNumber];
-            string s = "";
-            int k = 0;
-            for (int i = 0; i < array[11].Length; i++)
-            {
-                if (array[11][i] != ';')
-                {
-                    s += array[11][i];
-                }
-                if (array[11][i] == ';' || i == array[11].Length - 1)
-                {
-                    ChannelsNames[k] = s;
-                    s = "";
-                    k++;
-                }
-            }
-
-            float[][] table = new float[ChannelsNumber][];
-            for (int i = 0; i < ChannelsNumber; i++)
-            {
-                table[i] = new float[SamplesNumber];
-            }
-            for (int i = 12; i < SamplesNumber + 12; i++)
-            {
-                k = 0;
-                for (int j = 0; j < array[i].Length; j++)
-                {
-                    if (array[i][j] != ' ')
-                    {
-                        s += array[i][j];
-                    }
-                    if (array[i][j] == ' ' || j == array[i].Length - 1)
-                    {
-                        table[k][i - 12] = float.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
-                        s = "";
-                        k++;
-                    }
-                }
-            }
-
-            Array.Clear(array, 0, array.Length);
-            
-            bbb = new Bitmap[ChannelsNumber];
-            for (int i = 0; i < ChannelsNumber; i++)
+            Holder.bbb = new Bitmap[Holder.ChannelsNumber];
+            for (int i = 0; i < Holder.ChannelsNumber; i++)
             {
                 Graphics graphicsObj;
-                if (ChannelsNumber < 3)
+                if (Holder.ChannelsNumber < 3)
                 {
                     this.Height = this.ClientSize.Height / 3;
                 }
-                bbb[i] = new Bitmap(this.ClientRectangle.Width,
-                                    this.ClientRectangle.Height / ChannelsNumber,
+                Holder.bbb[i] = new Bitmap(this.ClientRectangle.Width,
+                                    this.ClientRectangle.Height / Holder.ChannelsNumber,
                                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                graphicsObj = Graphics.FromImage(bbb[i]);
+                graphicsObj = Graphics.FromImage(Holder.bbb[i]);
                 graphicsObj.Clear(Color.White);
 
                 Font drawFont = new Font("Arial", 16);
                 SolidBrush drawBrush = new SolidBrush(Color.Blue);
                 float x = 0;
-                float y = this.ClientSize.Height / ChannelsNumber - 20;
-                graphicsObj.DrawString(ChannelsNames[i], drawFont, drawBrush, x, y);
+                float y = this.ClientSize.Height / Holder.ChannelsNumber - 20;
+                graphicsObj.DrawString(Holder.ChannelsNames[i], drawFont, drawBrush, x, y);
 
                 graphicsObj.SmoothingMode = SmoothingMode.AntiAlias;
                 float MIN_SAMPLE = 0;
-                float MAX_SAMPLE = SamplesNumber;
-                float MIN_LEVEL = table[i].Min();
-                float MAX_LEVEL = table[i].Max();
+                float MAX_SAMPLE = Holder.SamplesNumber;
+                float MIN_LEVEL = Holder.table[i].Min();
+                float MAX_LEVEL = Holder.table[i].Max();
                 MapRectangles(graphicsObj,
                     MIN_SAMPLE, MAX_SAMPLE, MIN_LEVEL, MAX_LEVEL,
-                    0, this.ClientSize.Width, this.ClientSize.Height / ChannelsNumber - 20, 0);
+                    0, this.ClientSize.Width, this.ClientSize.Height / Holder.ChannelsNumber - 20, 0);
                 
                 using (Pen thin_pen = new Pen(Color.Black, 3))
                 {
-                    for(int count = 0; count < SamplesNumber - 1; count++)
+                    for(int count = 0; count < Holder.SamplesNumber - 1; count++)
                     {
-                        graphicsObj.DrawLine(thin_pen, new PointF(count, table[i][count]), new PointF(count + 1, table[i][count + 1]));
+                        graphicsObj.DrawLine(thin_pen, new PointF(count, Holder.table[i][count]), new PointF(count + 1, Holder.table[i][count + 1]));
                     }
                 }
 
@@ -152,7 +95,7 @@ namespace DSP
             Graphics graphicsObj = e.Graphics;
 
             int h = 0;
-            foreach (Bitmap bmap in bbb)
+            foreach (Bitmap bmap in Holder.bbb)
             {
                 graphicsObj.DrawImage(bmap, 0, bmap.Height * h, bmap.Width, bmap.Height);
                 graphicsObj.DrawRectangle(Pens.Blue, 0, bmap.Height * h, bmap.Width, bmap.Height);

@@ -37,6 +37,7 @@ namespace DSP
             this.AnaliseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instrumetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.informationAboutSignalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.oscillogramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -53,6 +54,7 @@ namespace DSP
             this.FilterToolStripMenuItem,
             this.AnaliseToolStripMenuItem,
             this.instrumetsToolStripMenuItem,
+            this.oscillogramToolStripMenuItem,
             this.SettingsToolStripMenuItem,
             this.HelpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -109,6 +111,12 @@ namespace DSP
             this.informationAboutSignalToolStripMenuItem.Text = "Информация о сигнале";
             this.informationAboutSignalToolStripMenuItem.Click += new System.EventHandler(this.informationAboutSignalToolStripMenuItem_Click);
             // 
+            // oscillogramToolStripMenuItem
+            // 
+            this.oscillogramToolStripMenuItem.Name = "oscillogramToolStripMenuItem";
+            this.oscillogramToolStripMenuItem.Size = new System.Drawing.Size(140, 24);
+            this.oscillogramToolStripMenuItem.Text = "Осциллограммы";
+            // 
             // SettingsToolStripMenuItem
             // 
             this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
@@ -157,6 +165,7 @@ namespace DSP
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripMenuItem instrumetsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem informationAboutSignalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem oscillogramToolStripMenuItem;
     }
 }
 
