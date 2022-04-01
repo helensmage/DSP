@@ -31,8 +31,12 @@ namespace DSP
         public static string[] ChannelsNames { get; set; }
         public static float[][] table { get; set; }
         public static Bitmap[] bbb { get; set; }
-        public static List<Bitmap> Ocsillograms { get; set; }
-        public static System.Windows.Forms.ToolStripMenuItem[] SubOscillogram { get; set; }
+        //public static List<Bitmap> Ocsillograms { get; set; }
+        public static Dictionary<string, Bitmap> Ocsillograms { get; set; }
+        public static ToolStripMenuItem[] SubOscillogram { get; set; }
         public static int CurrentIndex { get; set; }
+        public static Form5 oscillo { get; set; }
+        public static Point point { get; set; }
+        public static bool flagOscillo { get; set; }
     }
 }

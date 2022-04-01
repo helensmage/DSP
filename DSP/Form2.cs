@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -90,7 +91,40 @@ namespace DSP
             
         }
 
-        private void Form2_Paint(object sender, PaintEventArgs e)
+        private void panel1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                contextMenuStrip1.Show(MousePosition, ToolStripDropDownDirection.Right);
+                Holder.point = this.PointToClient(Cursor.Position);
+            }
+        }
+
+        private void осциллограммаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Holder.CurrentIndex = Holder.point.Y / (this.ClientSize.Height/ Holder.ChannelsNumber);
+            if (!Holder.SubOscillogram[Holder.CurrentIndex].Checked)
+            {
+                Holder.SubOscillogram[Holder.CurrentIndex].CheckState = CheckState.Checked;
+                Holder.flagOscillo = true;
+                if (Holder.Ocsillograms == null)
+                {
+                    Holder.Ocsillograms = new Dictionary<string, Bitmap>();
+                }
+                else
+                {
+                    Holder.oscillo.Close();
+                }
+                Holder.oscillo = new Form5();
+                Holder.oscillo.Show();
+            }
+            else
+            {
+                MessageBox.Show("Осциллограмма канала " + Holder.ChannelsNames[Holder.CurrentIndex] + " уже имеется!", "Предупреждение");
+            }
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
             Graphics graphicsObj = e.Graphics;
 

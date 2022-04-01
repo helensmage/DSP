@@ -17,9 +17,6 @@ namespace DSP
         public Form5()
         {
             InitializeComponent();
-            
-            //panel1.Height *= Holder.Ocsillograms.Count + 1;
-            //panel1.AutoScroll = true;
         }
 
         private void MapRectangles(Graphics gr,
@@ -45,63 +42,83 @@ namespace DSP
 
         private void Form5_Load(object sender, EventArgs e)
         {
-            //Holder.bbb = new Bitmap[Holder.ChannelsNumber];
-            Graphics graphicsObj;
-            /*if (Holder.ChannelsNumber < 3)
+            if (Holder.flagOscillo)
             {
-                this.Height = this.ClientSize.Height / 3;
-            }*/
-            this.Height *= (Holder.Ocsillograms.Count + 1);
-            Bitmap bmp = new Bitmap(/*this.ClientRectangle.Width*/ this.ClientSize.Width /*- 20*/,
-                                /*this.ClientRectangle.Height*/ this.ClientSize.Height / (Holder.Ocsillograms.Count + 1),
-                                System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            Holder.Ocsillograms.Add(bmp);
-            
+                Graphics graphicsObj;
+                this.Height = 120 + 200 * (Holder.Ocsillograms.Count + 1) + 40;
+                Bitmap bmp = new Bitmap(this.ClientSize.Width /*- 20*/,
+                                    /*this.ClientSize.Height / (Holder.Ocsillograms.Count + 1)*/ 200,
+                                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Holder.Ocsillograms.Add(Holder.ChannelsNames[Holder.CurrentIndex], bmp);
 
-            graphicsObj = Graphics.FromImage(bmp);
 
-            graphicsObj.Clear(Color.White);
+                graphicsObj = Graphics.FromImage(bmp);
 
-            /*Font drawFont = new Font("Arial", 16);
-            SolidBrush drawBrush = new SolidBrush(Color.Blue);
-            float x = 0;
-            float y = this.ClientSize.Height / Holder.Ocsillograms.Count - 20;
-            graphicsObj.DrawString(Holder.ChannelsNames[Holder.CurrentIndex], drawFont, drawBrush, x, y);*/
+                graphicsObj.Clear(Color.White);
 
-            graphicsObj.SmoothingMode = SmoothingMode.AntiAlias;
-            float MIN_SAMPLE = 0;
-            float MAX_SAMPLE = Holder.SamplesNumber;
-            float MIN_LEVEL = Holder.table[Holder.CurrentIndex].Min();
-            float MAX_LEVEL = Holder.table[Holder.CurrentIndex].Max();
-            MapRectangles(graphicsObj,
-                MIN_SAMPLE, MAX_SAMPLE, MIN_LEVEL, MAX_LEVEL,
-                0, this.ClientSize.Width /*- 20*/, this.ClientSize.Height / Holder.Ocsillograms.Count/* - 20*/, 0);
+                /*Font drawFont = new Font("Arial", 16);
+                SolidBrush drawBrush = new SolidBrush(Color.Blue);
+                float x = 0;
+                float y = this.ClientSize.Height / Holder.Ocsillograms.Count - 20;
+                graphicsObj.DrawString(Holder.ChannelsNames[Holder.CurrentIndex], drawFont, drawBrush, x, y);*/
 
-            using (Pen thin_pen = new Pen(Color.Black, 3))
-            {
-                for (int count = 0; count < Holder.SamplesNumber - 1; count++)
+                graphicsObj.SmoothingMode = SmoothingMode.AntiAlias;
+                float MIN_SAMPLE = 0;
+                float MAX_SAMPLE = Holder.SamplesNumber;
+                float MIN_LEVEL = Holder.table[Holder.CurrentIndex].Min();
+                float MAX_LEVEL = Holder.table[Holder.CurrentIndex].Max();
+                MapRectangles(graphicsObj,
+                    MIN_SAMPLE, MAX_SAMPLE, MIN_LEVEL, MAX_LEVEL,
+                    0, this.ClientSize.Width /*- 20*/, /*this.ClientSize.Height / Holder.Ocsillograms.Count*//* - 20*/ 200, 0);
+
+                using (Pen thin_pen = new Pen(Color.Black, 3))
                 {
-                    graphicsObj.DrawLine(thin_pen, new PointF(count, Holder.table[Holder.CurrentIndex][count]), new PointF(count + 1, Holder.table[Holder.CurrentIndex][count + 1]));
+                    for (int count = 0; count < Holder.SamplesNumber - 1; count++)
+                    {
+                        graphicsObj.DrawLine(thin_pen, new PointF(count, Holder.table[Holder.CurrentIndex][count]), new PointF(count + 1, Holder.table[Holder.CurrentIndex][count + 1]));
+                    }
                 }
-            }
 
-            graphicsObj.Dispose();
+                graphicsObj.Dispose();
+            }
+            
         }
 
-        private void Form5_Paint(object sender, PaintEventArgs e)
+        private void panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            /*Panel Panel = new Panel();
-            Panel.Width = this.ClientSize.Width;
-            Panel.Height = this.ClientSize.Height;
-            Panel.AutoScroll = true;
-            this.Controls.Add(Panel);*/
-            Graphics graphicsObj = /*Panel*/e.Graphics;
+            if (e.Button == MouseButtons.Right)
+            {
+                contextMenuStrip1.Show(MousePosition, ToolStripDropDownDirection.Right);
+                Holder.point = this.PointToClient(Cursor.Position);
+            }
+        }
+
+        // Закрыть
+        private void осциллограммаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Holder.flagOscillo = false;
+            // Сделать каррент индекс по координатам
+            Holder.CurrentIndex = (Holder.point.Y - 90) / (this.ClientSize.Height / Holder.Ocsillograms.Count);
+            Holder.Ocsillograms.Remove(Holder.ChannelsNames[Holder.CurrentIndex]);
+            Holder.SubOscillogram[Holder.CurrentIndex].CheckState = CheckState.Checked;
+            // Вызвать функцию перерисовки окна
+            Holder.oscillo.Close();
+            if (Holder.Ocsillograms.Count != 0)
+            {
+                Holder.oscillo = new Form5();
+                Holder.oscillo.Show();
+            }
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics graphicsObj = e.Graphics;
 
             int h = 0;
-            foreach (Bitmap bmap in Holder.Ocsillograms)
+            foreach (var bmap in Holder.Ocsillograms)
             {
-                graphicsObj.DrawImage(bmap, 0, bmap.Height * h, bmap.Width, bmap.Height);
-                graphicsObj.DrawRectangle(Pens.Blue, 0, bmap.Height * h, bmap.Width, bmap.Height);
+                graphicsObj.DrawImage(bmap.Value, 0, bmap.Value.Height * h + 90, bmap.Value.Width, bmap.Value.Height);
+                graphicsObj.DrawRectangle(Pens.Blue, 0, bmap.Value.Height * h + 90, bmap.Value.Width, bmap.Value.Height);
                 h++;
             }
 

@@ -16,7 +16,7 @@ namespace DSP
     {
         Form2 f2;
         Form3 inf;
-        Form5 oscillo;
+        //Form5 oscillo;
         //private System.Windows.Forms.ToolStripMenuItem[] SubOscillogram;
 
         public Form1()
@@ -96,11 +96,11 @@ namespace DSP
             f2 = new Form2();
             f2.Show();
             
-            Holder.SubOscillogram = new System.Windows.Forms.ToolStripMenuItem[Holder.ChannelsNumber];
+            Holder.SubOscillogram = new ToolStripMenuItem[Holder.ChannelsNumber];
             for (int i = 0; i < Holder.ChannelsNames.Length; i++)
             {
-                Holder.SubOscillogram[i] = new System.Windows.Forms.ToolStripMenuItem(Holder.ChannelsNames[i]) { Checked = false, CheckOnClick = true }; ;
-                Holder.SubOscillogram[i].Size = new System.Drawing.Size(150, 26);
+                Holder.SubOscillogram[i] = new ToolStripMenuItem(Holder.ChannelsNames[i]) { Checked = false, CheckOnClick = true }; ;
+                Holder.SubOscillogram[i].Size = new Size(150, 26);
                 //Holder.SubOscillogram[i].Text = Holder.ChannelsNames[i];
                 this.oscillogramToolStripMenuItem.DropDownItems.Add(Holder.SubOscillogram[i]);
             }
@@ -113,22 +113,37 @@ namespace DSP
         private void ShowOscillogram(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-            if (menuItem.CheckState == CheckState.Checked)
+            Holder.CurrentIndex = Array.IndexOf(Holder.ChannelsNames, menuItem.ToString());
+            if (menuItem.Checked)
             {
-                Holder.CurrentIndex = Array.IndexOf(Holder.ChannelsNames, menuItem.ToString());
-                Console.WriteLine(Holder.CurrentIndex);
-            }
+                Holder.flagOscillo = true;
+                if (Holder.Ocsillograms == null)
+                {
+                    Holder.Ocsillograms = new Dictionary<string, Bitmap>();
+                }
+                else
+                {
+                    Holder.oscillo.Close();
+                }
+                /*if (!Holder.Ocsillograms.ContainsKey(Holder.ChannelsNames[Holder.CurrentIndex]))
+                {
 
-            if (oscillo == null)
-            {
-                Holder.Ocsillograms = new List<Bitmap>();
+                }*/
+                Holder.oscillo = new Form5();
+                Holder.oscillo.Show();
             }
             else
             {
-                oscillo.Close();
+                Holder.flagOscillo = false;
+                Holder.Ocsillograms.Remove(Holder.ChannelsNames[Holder.CurrentIndex]);
+                // Вызвать функцию перерисовки окна
+                Holder.oscillo.Close();
+                if (Holder.Ocsillograms.Count != 0)
+                {
+                    Holder.oscillo = new Form5();
+                    Holder.oscillo.Show();
+                }
             }
-            oscillo = new Form5();
-            oscillo.Show();
         }
 
         private void informationAboutSignalToolStripMenuItem_Click(object sender, EventArgs e)
