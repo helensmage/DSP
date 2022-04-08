@@ -13,9 +13,11 @@ namespace DSP
 {
     public partial class Form3 : Form
     {
-        public Form3()
+        Form1 Parent;
+        public Form3(Form1 ParentForm)
         {
             InitializeComponent();
+            Parent = ParentForm;
         }
 
         private void Form3_Load(object sender, EventArgs e)

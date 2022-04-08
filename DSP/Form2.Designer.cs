@@ -42,7 +42,7 @@ namespace DSP
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(300, 800);
+            this.panel1.Size = new System.Drawing.Size(232, 753);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
@@ -58,7 +58,7 @@ namespace DSP
             // осциллограммаToolStripMenuItem
             // 
             this.осциллограммаToolStripMenuItem.Name = "осциллограммаToolStripMenuItem";
-            this.осциллограммаToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.осциллограммаToolStripMenuItem.Size = new System.Drawing.Size(190, 24);
             this.осциллограммаToolStripMenuItem.Text = "осциллограмма";
             this.осциллограммаToolStripMenuItem.Click += new System.EventHandler(this.осциллограммаToolStripMenuItem_Click);
             // 
@@ -66,7 +66,7 @@ namespace DSP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 800);
+            this.ClientSize = new System.Drawing.Size(232, 753);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;

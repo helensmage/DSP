@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 using System.Globalization;
 
@@ -93,55 +94,66 @@ namespace DSP
 
             if (f2 != null) f2.Close();
             if (inf != null) inf.Close();
-            f2 = new Form2();
+            if (Holder.oscillo != null) Holder.oscillo.Close();
+            f2 = new Form2(this);
+            f2.MdiParent = this;
             f2.Show();
             
-            Holder.SubOscillogram = new ToolStripMenuItem[Holder.ChannelsNumber];
+            Holder.SubOscillogram = new ToolStripMenuItem[Holder.ChannelsNumber]; // создаём подменю "осциллограммы"
             for (int i = 0; i < Holder.ChannelsNames.Length; i++)
             {
-                Holder.SubOscillogram[i] = new ToolStripMenuItem(Holder.ChannelsNames[i]) { Checked = false, CheckOnClick = true }; ;
+                Holder.SubOscillogram[i] = new ToolStripMenuItem(Holder.ChannelsNames[i]) { Checked = false, CheckOnClick = true };
                 Holder.SubOscillogram[i].Size = new Size(150, 26);
-                //Holder.SubOscillogram[i].Text = Holder.ChannelsNames[i];
-                this.oscillogramToolStripMenuItem.DropDownItems.Add(Holder.SubOscillogram[i]);
+                this.oscillogramToolStripMenuItem.DropDownItems.Add(Holder.SubOscillogram[i]); // добавляем в меню "осциллограммы"
             }
+            //Holder.CurIndArray = new List<int>();
             for (int i = 0; i < Holder.ChannelsNames.Length; i++)
             {
-                Holder.SubOscillogram[i].Click += ShowOscillogram;
+                Holder.SubOscillogram[i].Click += ShowOscillogram; // при клике на элемент подменю галка меняется
             }
         }
 
         private void ShowOscillogram(object sender, EventArgs e)
         {
-            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-            Holder.CurrentIndex = Array.IndexOf(Holder.ChannelsNames, menuItem.ToString());
-            if (menuItem.Checked)
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem; // получили элемент подменю по клику
+            Holder.CurrentIndex = Array.IndexOf(Holder.ChannelsNames, menuItem.ToString()); // узнали этого элемента индекс
+            
+            if (menuItem.Checked) // проверяем, есть ли теперь галка на элементе подменю
             {
-                Holder.flagOscillo = true;
-                if (Holder.Ocsillograms == null)
+                //Holder.flagOscillo = true;
+                if (Holder.oscillo == null && Holder.Ocsillograms == null) // если в словаре нет пока осцилограмм
                 {
-                    Holder.Ocsillograms = new Dictionary<string, Bitmap>();
+                    Holder.Ocsillograms = new List<Chart>(); // создаём словарь осциллограмм
+                    Holder.CurIndArray = new List<int>();
+                    Holder.oscillo = new Form5(this); // создаём окно
+                    Holder.oscillo.MdiParent = this;
+                    Holder.oscillo.Show();
+                }
+                else // если уже есть осциллограммы, то надо добавить - вызвать функцию формы5 load
+                {
+                    // ложня
+                    Holder.oscillo.Form5_Load(null, null);
+                    //Holder.oscillo.Refresh();
+                }
+            }
+            else // проверяем, если теперь нет галки на элементе подменю
+            {
+                Holder.Ocsillograms[Holder.CurIndArray.IndexOf(Holder.CurrentIndex)].Dispose(); //
+                Holder.Ocsillograms.Remove(Holder.Ocsillograms[Holder.CurIndArray.IndexOf(Holder.CurrentIndex)]); // удаляем из словаря осциллограмм по ключу-названию канала
+                Holder.CurIndArray.Remove(Holder.CurrentIndex);
+                if (Holder.Ocsillograms.Count == 0) // если после удаления в словаре не осталось осциллограмм
+                {
+                    Holder.oscillo.Close(); // то закрыть окно
                 }
                 else
                 {
-                    Holder.oscillo.Close();
-                }
-                /*if (!Holder.Ocsillograms.ContainsKey(Holder.ChannelsNames[Holder.CurrentIndex]))
-                {
-
-                }*/
-                Holder.oscillo = new Form5();
-                Holder.oscillo.Show();
-            }
-            else
-            {
-                Holder.flagOscillo = false;
-                Holder.Ocsillograms.Remove(Holder.ChannelsNames[Holder.CurrentIndex]);
-                // Вызвать функцию перерисовки окна
-                Holder.oscillo.Close();
-                if (Holder.Ocsillograms.Count != 0)
-                {
-                    Holder.oscillo = new Form5();
-                    Holder.oscillo.Show();
+                    // иначе вызвать функцию перерисовки окна
+                    Holder.oscillo.Height = 90 + 200 * (Holder.Ocsillograms.Count) + 40;
+                    for (int i = 0; i < Holder.Ocsillograms.Count; i++)
+                    {
+                        Holder.Ocsillograms[i].SetBounds(0, 90 + 200 * i, Holder.oscillo.ClientSize.Width, 200); // H = 200
+                    }
+                    Holder.oscillo.panel1_Paint(null, null);
                 }
             }
         }
@@ -150,7 +162,8 @@ namespace DSP
         {
             try
             {
-                inf = new Form3();
+                inf = new Form3(this);
+                inf.MdiParent = this;
                 inf.Show();
             }
             catch
@@ -161,6 +174,7 @@ namespace DSP
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.IsMdiContainer = true;
             HelpToolStripMenuItem.Click += HelpClick;
 
             OpenToolStripMenuItem.Click += OpenClick;

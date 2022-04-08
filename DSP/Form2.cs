@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 
@@ -10,16 +11,19 @@ namespace DSP
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        Form1 Parent;
+        public Form2(Form1 ParentForm)
         {
             InitializeComponent();
+            Parent = ParentForm;
             
+
             StartPosition = FormStartPosition.Manual;
             foreach (var scrn in Screen.AllScreens)
             {
                 if (scrn.Bounds.Contains(Location))
                 {
-                    Location = new Point(scrn.Bounds.Right - Width, scrn.Bounds.Top + 47);
+                    Location = new Point(scrn.Bounds.Right - Width - 20, scrn.Bounds.Top);
                     return;
                 }
             }
@@ -96,31 +100,33 @@ namespace DSP
             if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip1.Show(MousePosition, ToolStripDropDownDirection.Right);
-                Holder.point = this.PointToClient(Cursor.Position);
+                Holder.point = this.PointToClient(System.Windows.Forms.Cursor.Position);
             }
         }
 
         private void осциллограммаToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Holder.CurrentIndex = Holder.point.Y / (this.ClientSize.Height/ Holder.ChannelsNumber);
-            if (!Holder.SubOscillogram[Holder.CurrentIndex].Checked)
+            if (Holder.oscillo == null && Holder.Ocsillograms == null)
             {
                 Holder.SubOscillogram[Holder.CurrentIndex].CheckState = CheckState.Checked;
-                Holder.flagOscillo = true;
-                if (Holder.Ocsillograms == null)
-                {
-                    Holder.Ocsillograms = new Dictionary<string, Bitmap>();
-                }
-                else
-                {
-                    Holder.oscillo.Close();
-                }
-                Holder.oscillo = new Form5();
+                Holder.Ocsillograms = new List<Chart>();
+                Holder.CurIndArray = new List<int>();
+                Holder.oscillo = new Form5(Parent); // создаём окно
+                Holder.oscillo.MdiParent = Parent;
                 Holder.oscillo.Show();
             }
             else
             {
-                MessageBox.Show("Осциллограмма канала " + Holder.ChannelsNames[Holder.CurrentIndex] + " уже имеется!", "Предупреждение");
+                if (!Holder.CurIndArray.Contains(Holder.CurrentIndex))
+                {
+                    Holder.SubOscillogram[Holder.CurrentIndex].CheckState = CheckState.Checked;
+                    Holder.oscillo.Form5_Load(null, null);
+                }
+                else
+                {
+                    MessageBox.Show("Осциллограмма канала " + Holder.ChannelsNames[Holder.CurrentIndex] + " уже существует!", "Предупреждение");
+                }
             }
         }
 

@@ -60,7 +60,6 @@ namespace DSP
             this.panel1.Size = new System.Drawing.Size(983, 456);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseUp);
             // 
             // contextMenuStrip1
             // 
@@ -108,6 +107,7 @@ namespace DSP
             this.toolStripButton1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toolStripButton1.Size = new System.Drawing.Size(35, 35);
             this.toolStripButton1.Text = "toolStripButton1";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
             // 
@@ -120,6 +120,7 @@ namespace DSP
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(35, 35);
             this.toolStripButton2.Text = "toolStripButton2";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // toolStripButton3
             // 
@@ -234,6 +235,7 @@ namespace DSP
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
             this.Name = "Form5";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Осциллограммы";
             this.Load += new System.EventHandler(this.Form5_Load);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -246,7 +248,7 @@ namespace DSP
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        public System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DSP
 {
@@ -22,21 +23,29 @@ namespace DSP
     }
     public static class Holder
     {
-        public static string filename { get; set; }
-        public static int ChannelsNumber { get; set; }
-        public static int SamplesNumber { get; set; }
-        public static float SamplingRate { get; set; }
-        public static string StartDate { get; set; }
-        public static string StartTime { get; set; }
-        public static string[] ChannelsNames { get; set; }
-        public static float[][] table { get; set; }
-        public static Bitmap[] bbb { get; set; }
-        //public static List<Bitmap> Ocsillograms { get; set; }
-        public static Dictionary<string, Bitmap> Ocsillograms { get; set; }
-        public static ToolStripMenuItem[] SubOscillogram { get; set; }
-        public static int CurrentIndex { get; set; }
-        public static Form5 oscillo { get; set; }
-        public static Point point { get; set; }
-        public static bool flagOscillo { get; set; }
+        // это всё читается из файла
+        public static string filename { get; set; } // имя файла
+        public static int ChannelsNumber { get; set; } // количество каналов
+        public static int SamplesNumber { get; set; } // количество записей
+        public static float SamplingRate { get; set; } // частота
+        public static string StartDate { get; set; } // начальная дата
+        public static string StartTime { get; set; } // начальное время
+        public static string[] ChannelsNames { get; set; } // массив названий каналов
+        public static float[][] table { get; set; } // массив значений каналов
+
+        // форма2 "каналы"
+        public static Bitmap[] bbb { get; set; } // массив картинок графиков с их названиями
+
+        // форма3 "осцилограммы"
+        //public static Dictionary<string, Bitmap> Ocsillograms { get; set; } // словарь осциллограмм <название канала, картинка осциллограммы> 
+        public static List<Chart> Ocsillograms { get; set; }
+        public static ToolStripMenuItem[] SubOscillogram { get; set; } // подменю "Осциллограммы" на форме1 "главное окно"
+        public static int CurrentIndex { get; set; } // текущий индекс-метка, с какой осциллограммой работаем
+        public static List<int> CurIndArray { get; set; }
+        public static Form5 oscillo { get; set; } // форма5 "осциллограммы"
+        public static Point point { get; set; } // координаты точки для определения клика правой мышью по форме2 и форме5
+        public static bool flagOscillo { get; set; } // флаг для создания битмап - убрать переменную
+        public static bool grid { get; set; } // флаг для создания решётки
+        public static bool dots { get; set; } // флаг для создания решётки
     }
 }

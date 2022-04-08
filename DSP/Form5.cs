@@ -9,120 +9,129 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Windows;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DSP
 {
     public partial class Form5 : Form
     {
-        public Form5()
+        Chart chart;
+        Chart chart1;
+        int H = 200; // стандартная высота графика + отступ с названием канала
+
+        Form1 Parent;
+        public Form5(Form1 ParentForm)
         {
             InitializeComponent();
+            Parent = ParentForm;
+            Holder.grid = false;
+        }
+        private void CreateChart()
+        {
+            chart = new Chart();
+            chart.Parent = this.panel1;
+            chart.SetBounds(0, 90 + H * Holder.Ocsillograms.Count, ClientSize.Width, H);
+            ChartArea area = new ChartArea();
+            area.Name = "myGraph";
+            area.AxisY.Minimum = Holder.table[Holder.CurrentIndex].Min();
+            area.AxisY.Maximum = Holder.table[Holder.CurrentIndex].Max();
+            area.AxisX.Minimum = 0;
+            area.AxisX.Maximum = Holder.SamplesNumber;
+            area.AxisY.LabelStyle.Format = "N0";
+            area.AxisX.LabelStyle.Format = "N0";
+            area.AxisX.ScrollBar.Enabled = true;
+            area.CursorX.IsUserEnabled = true;
+            area.CursorX.IsUserSelectionEnabled = true;
+            area.CursorX.Interval = 0;
+            area.AxisX.ScaleView.Zoomable = true;
+            area.AxisX.ScrollBar.IsPositionedInside = true;
+            area.BorderDashStyle = ChartDashStyle.Solid;
+            area.BorderColor = Color.Black;
+            area.BorderWidth = 1;
+            chart.ChartAreas.Add(area);
+            Series series1 = new Series();
+            series1.ChartArea = "myGraph";
+            series1.ChartType = SeriesChartType.Line;
+            series1.LegendText = Holder.ChannelsNames[Holder.CurrentIndex];
+            chart.Legends.Add(Holder.ChannelsNames[Holder.CurrentIndex]);
+            chart.Series.Add(series1);
         }
 
-        private void MapRectangles(Graphics gr,
-             float wxmin, float wxmax, float wymin, float wymax,
-             float dxmin, float dxmax, float dymin, float dymax)
+        public void Form5_Load(object sender, EventArgs e)
         {
-            RectangleF wrectf;
-            if (wymax - wymin != 0)
-            {
-                wrectf = new RectangleF(wxmin, wymin, wxmax - wxmin, wymax - wymin);
-            }
-            else
-            {
-                wrectf = new RectangleF(wxmin, wymin * wymin * (-1000), wxmax - wxmin, wxmax - wxmin);
-            }
-            PointF[] dpts = {
-                 new PointF(dxmin, dymin),
-                 new PointF(dxmax, dymin),
-                 new PointF(dxmin, dymax)
-            };
-            gr.Transform = new Matrix(wrectf, dpts);
-        }
-
-        private void Form5_Load(object sender, EventArgs e)
-        {
-            if (Holder.flagOscillo)
-            {
-                Graphics graphicsObj;
-                this.Height = 120 + 200 * (Holder.Ocsillograms.Count + 1) + 40;
-                Bitmap bmp = new Bitmap(this.ClientSize.Width /*- 20*/,
-                                    /*this.ClientSize.Height / (Holder.Ocsillograms.Count + 1)*/ 200,
-                                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                Holder.Ocsillograms.Add(Holder.ChannelsNames[Holder.CurrentIndex], bmp);
-
-
-                graphicsObj = Graphics.FromImage(bmp);
-
-                graphicsObj.Clear(Color.White);
-
-                /*Font drawFont = new Font("Arial", 16);
-                SolidBrush drawBrush = new SolidBrush(Color.Blue);
-                float x = 0;
-                float y = this.ClientSize.Height / Holder.Ocsillograms.Count - 20;
-                graphicsObj.DrawString(Holder.ChannelsNames[Holder.CurrentIndex], drawFont, drawBrush, x, y);*/
-
-                graphicsObj.SmoothingMode = SmoothingMode.AntiAlias;
-                float MIN_SAMPLE = 0;
-                float MAX_SAMPLE = Holder.SamplesNumber;
-                float MIN_LEVEL = Holder.table[Holder.CurrentIndex].Min();
-                float MAX_LEVEL = Holder.table[Holder.CurrentIndex].Max();
-                MapRectangles(graphicsObj,
-                    MIN_SAMPLE, MAX_SAMPLE, MIN_LEVEL, MAX_LEVEL,
-                    0, this.ClientSize.Width /*- 20*/, /*this.ClientSize.Height / Holder.Ocsillograms.Count*//* - 20*/ 200, 0);
-
-                using (Pen thin_pen = new Pen(Color.Black, 3))
-                {
-                    for (int count = 0; count < Holder.SamplesNumber - 1; count++)
-                    {
-                        graphicsObj.DrawLine(thin_pen, new PointF(count, Holder.table[Holder.CurrentIndex][count]), new PointF(count + 1, Holder.table[Holder.CurrentIndex][count + 1]));
-                    }
-                }
-
-                graphicsObj.Dispose();
-            }
-            
-        }
-
-        private void panel1_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                contextMenuStrip1.Show(MousePosition, ToolStripDropDownDirection.Right);
-                Holder.point = this.PointToClient(Cursor.Position);
-            }
+            this.Height = 90 + 200 * (Holder.Ocsillograms.Count + 1) + 40;
+            CreateChart();
+            Holder.Ocsillograms.Add(chart);
+            Holder.CurIndArray.Add(Holder.CurrentIndex);
+            this.panel1.Refresh();
+            chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DeleteChart);
         }
 
         // Закрыть
         private void осциллограммаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Holder.flagOscillo = false;
-            // Сделать каррент индекс по координатам
-            Holder.CurrentIndex = (Holder.point.Y - 90) / (this.ClientSize.Height / Holder.Ocsillograms.Count);
-            Holder.Ocsillograms.Remove(Holder.ChannelsNames[Holder.CurrentIndex]);
-            Holder.SubOscillogram[Holder.CurrentIndex].CheckState = CheckState.Checked;
-            // Вызвать функцию перерисовки окна
-            Holder.oscillo.Close();
-            if (Holder.Ocsillograms.Count != 0)
+            Holder.SubOscillogram[Holder.CurIndArray[Holder.Ocsillograms.IndexOf(chart1)]].CheckState = CheckState.Unchecked;
+            Holder.CurIndArray.RemoveAt(Holder.Ocsillograms.IndexOf(chart1)); // ?
+            Holder.Ocsillograms[Holder.Ocsillograms.IndexOf(chart1)].Dispose(); //
+            Holder.Ocsillograms.RemoveAt(Holder.Ocsillograms.IndexOf(chart1)); // удаляем из осциллограмм по индексу
+            if (Holder.Ocsillograms.Count == 0) // если после удаления не осталось осциллограмм
             {
-                Holder.oscillo = new Form5();
-                Holder.oscillo.Show();
+                this.Close(); // то закрыть окно
+            }
+            else
+            {
+                // иначе вызвать функцию перерисовки окна
+                this.Height = 90 + 200 * (Holder.Ocsillograms.Count) + 40;
+                for (int j = 0; j < Holder.Ocsillograms.Count; j++)
+                {
+                    Holder.Ocsillograms[j].SetBounds(0, 90 + 200 * j, this.ClientSize.Width, 200); // H = 200
+                }
+                this.Refresh();
+            }
+        }
+        private void DeleteChart(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                chart1 = sender as Chart;
             }
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            Graphics graphicsObj = e.Graphics;
-
-            int h = 0;
-            foreach (var bmap in Holder.Ocsillograms)
+            Holder.grid = !Holder.grid;
+            this.toolStripButton1.Checked = Holder.grid; // кнопка нажата или нет
+            for (int i = 0; i < Holder.Ocsillograms.Count; i++) // перебираем все осцилограммы
             {
-                graphicsObj.DrawImage(bmap.Value, 0, bmap.Value.Height * h + 90, bmap.Value.Width, bmap.Value.Height);
-                graphicsObj.DrawRectangle(Pens.Blue, 0, bmap.Value.Height * h + 90, bmap.Value.Width, bmap.Value.Height);
-                h++;
+                Holder.Ocsillograms[i].ChartAreas["myGraph"].AxisX.MajorGrid.Enabled = !Holder.grid;
+                Holder.Ocsillograms[i].ChartAreas["myGraph"].AxisY.MajorGrid.Enabled = !Holder.grid;
             }
+        }
 
-            graphicsObj.Dispose();
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            Holder.dots = !Holder.dots;
+            this.toolStripButton2.Checked = Holder.dots;
+            for (int i = 0; i < Holder.Ocsillograms.Count; i++)
+            {
+                if (!Holder.dots)
+                    Holder.Ocsillograms[i].Series[0].MarkerStyle = MarkerStyle.None;
+                else
+                    Holder.Ocsillograms[i].Series[0].MarkerStyle = MarkerStyle.Circle;
+            }
+        }
+
+        public void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            int[] counts = new int[Holder.SamplesNumber];
+            for (int count = 0; count < Holder.SamplesNumber; count++)
+            {
+                counts[count] = count;
+            }
+            for (int i = 0; i < Holder.Ocsillograms.Count; i++)
+            {
+                Holder.Ocsillograms[i].Series[0].Points.DataBindXY(counts, Holder.table[Holder.CurIndArray[i]]);
+            }
         }
     }
 }
