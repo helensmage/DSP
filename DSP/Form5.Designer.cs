@@ -34,10 +34,13 @@ namespace DSP
             this.panel1 = new System.Windows.Forms.Panel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.осциллограммаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.locscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.globalescaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onelocscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.oneglobalscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
@@ -46,6 +49,7 @@ namespace DSP
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.fixscaleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,22 +63,53 @@ namespace DSP
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(983, 456);
             this.panel1.TabIndex = 0;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.осциллограммаToolStripMenuItem});
+            this.осциллограммаToolStripMenuItem,
+            this.locscaleToolStripMenuItem,
+            this.globalescaleToolStripMenuItem,
+            this.onelocscaleToolStripMenuItem,
+            this.oneglobalscaleToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(136, 28);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(287, 124);
             // 
             // осциллограммаToolStripMenuItem
             // 
             this.осциллограммаToolStripMenuItem.Name = "осциллограммаToolStripMenuItem";
-            this.осциллограммаToolStripMenuItem.Size = new System.Drawing.Size(135, 24);
+            this.осциллограммаToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
             this.осциллограммаToolStripMenuItem.Text = "Закрыть";
             this.осциллограммаToolStripMenuItem.Click += new System.EventHandler(this.осциллограммаToolStripMenuItem_Click);
+            // 
+            // locscaleToolStripMenuItem
+            // 
+            this.locscaleToolStripMenuItem.Name = "locscaleToolStripMenuItem";
+            this.locscaleToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
+            this.locscaleToolStripMenuItem.Text = "Локальный масштаб";
+            this.locscaleToolStripMenuItem.Click += new System.EventHandler(this.locscaleToolStripMenuItem_Click);
+            // 
+            // globalescaleToolStripMenuItem
+            // 
+            this.globalescaleToolStripMenuItem.Name = "globalescaleToolStripMenuItem";
+            this.globalescaleToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
+            this.globalescaleToolStripMenuItem.Text = "Глобальный масштаб";
+            this.globalescaleToolStripMenuItem.Click += new System.EventHandler(this.globalescaleToolStripMenuItem_Click);
+            // 
+            // onelocscaleToolStripMenuItem
+            // 
+            this.onelocscaleToolStripMenuItem.Name = "onelocscaleToolStripMenuItem";
+            this.onelocscaleToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
+            this.onelocscaleToolStripMenuItem.Text = "Единый локальный масштаб";
+            this.onelocscaleToolStripMenuItem.Click += new System.EventHandler(this.onelocscaleToolStripMenuItem_Click);
+            // 
+            // oneglobalscaleToolStripMenuItem
+            // 
+            this.oneglobalscaleToolStripMenuItem.Name = "oneglobalscaleToolStripMenuItem";
+            this.oneglobalscaleToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
+            this.oneglobalscaleToolStripMenuItem.Text = "Единый глобальный масштаб";
+            this.oneglobalscaleToolStripMenuItem.Click += new System.EventHandler(this.oneglobalscaleToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -83,7 +118,6 @@ namespace DSP
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
             this.toolStripButton2,
-            this.toolStripButton3,
             this.toolStripButton4,
             this.toolStripButton5,
             this.toolStripButton6,
@@ -122,18 +156,6 @@ namespace DSP
             this.toolStripButton2.Text = "toolStripButton2";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.AutoSize = false;
-            this.toolStripButton3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Margin = new System.Windows.Forms.Padding(0);
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(35, 35);
-            this.toolStripButton3.Text = "toolStripButton3";
-            // 
             // toolStripButton4
             // 
             this.toolStripButton4.AutoSize = false;
@@ -144,6 +166,7 @@ namespace DSP
             this.toolStripButton4.Name = "toolStripButton4";
             this.toolStripButton4.Size = new System.Drawing.Size(35, 35);
             this.toolStripButton4.Text = "toolStripButton4";
+            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
             // toolStripButton5
             // 
@@ -156,6 +179,7 @@ namespace DSP
             this.toolStripButton5.Name = "toolStripButton5";
             this.toolStripButton5.Size = new System.Drawing.Size(35, 35);
             this.toolStripButton5.Text = "toolStripButton5";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
             // toolStripButton6
             // 
@@ -168,6 +192,7 @@ namespace DSP
             this.toolStripButton6.Name = "toolStripButton6";
             this.toolStripButton6.Size = new System.Drawing.Size(35, 35);
             this.toolStripButton6.Text = "toolStripButton6";
+            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
             // 
             // toolStripButton7
             // 
@@ -177,10 +202,11 @@ namespace DSP
             this.toolStripButton7.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
             this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton7.Margin = new System.Windows.Forms.Padding(0);
+            this.toolStripButton7.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(30, 30);
+            this.toolStripButton7.Size = new System.Drawing.Size(30, 28);
             this.toolStripButton7.Text = "toolStripButton7";
+            this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
             // 
             // label1
             // 
@@ -222,6 +248,13 @@ namespace DSP
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
             // 
+            // fixscaleToolStripMenuItem
+            // 
+            this.fixscaleToolStripMenuItem.Name = "fixscaleToolStripMenuItem";
+            this.fixscaleToolStripMenuItem.Size = new System.Drawing.Size(286, 24);
+            this.fixscaleToolStripMenuItem.Text = "Задать масштаб";
+            this.fixscaleToolStripMenuItem.Click += new System.EventHandler(this.fixscaleToolStripMenuItem_Click);
+            // 
             // Form5
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -234,6 +267,7 @@ namespace DSP
             this.Controls.Add(this.label1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panel1);
+            this.MaximizeBox = false;
             this.Name = "Form5";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Осциллограммы";
@@ -252,7 +286,6 @@ namespace DSP
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
@@ -263,5 +296,10 @@ namespace DSP
         private System.Windows.Forms.ToolStripButton toolStripButton7;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem осциллограммаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem locscaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem globalescaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onelocscaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem oneglobalscaleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixscaleToolStripMenuItem;
     }
 }
